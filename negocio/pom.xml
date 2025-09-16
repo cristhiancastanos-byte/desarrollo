@@ -25,7 +25,6 @@
 
 
 
-        <!-- Proyecto interno -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>entidad</artifactId>
@@ -39,7 +38,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- BCrypt para hashing de contraseñas -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
@@ -48,15 +46,12 @@
 
 
 
-        <!-- Para compatibilidad con javax.annotation.Generated -->
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
             <version>2.1.1</version>
         </dependency>
 
-
-        <!-- Procesador de anotaciones JPA moderno -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
@@ -65,7 +60,6 @@
         </dependency>
 
 
-        <!-- Solo para pruebas -->
         <dependency>
             <groupId>com.google.oauth-client</groupId>
             <artifactId>google-oauth-client-java6</artifactId>
@@ -79,7 +73,6 @@
 
     <build>
         <plugins>
-            <!-- Plugin de compilación con soporte para JDK 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -88,7 +81,7 @@
                     <source>21</source>
                     <target>21</target>
                     <compilerArgs>
-                        <arg>-Xlint:-options</arg> <!-- Evita warnings innecesarios -->
+                        <arg>-Xlint:-options</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

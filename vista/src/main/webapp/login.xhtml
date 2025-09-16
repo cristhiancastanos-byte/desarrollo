@@ -1,78 +1,195 @@
-<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+    <title>SAUAP — Iniciar sesión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
 
-    <h:head>
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-        <link href="style.css" rel="stylesheet" type="text/css"/>
-        <style>
-            
-            *{
-                text-align: center;
-            }
-            .center{
-                float: none;
-                margin: 0 auto;
-                
-            }
-            
-           
-            div.login{
-                position: absolute;
-                top:0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 35%;
-                width: 25%;
-                padding: 25px;
-                margin: auto;
-                background: white;
-                border-radius: 5px;
-                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            }
-            .logo{
-                width: 150px;
-            }
-            .form-control:focus{
-                border-color:#007738;
-            }
-            .btn-success{
-                text-shadow: none;
-            }
-        </style>
-    </h:head>
+    <style>
+        .bg-brown   { background:#7a542c; }     /* fondo página */
+        .accent     { color:#b98a2e; }           /* dorado del título derecho */
+        .btn-orange { background:#ea9567; }      /* botón */
+        .chip-gray  { background:#f6e3d4; }      /* campos */
 
-    <h:body>
-        <div class = "row">
-           
-            <h:form>
-               
-                <p:messages id="messages" showDetail="true" closable="true">
-                     
-                </p:messages>
-                <div class="login">
-                    <div class="panel-header">
-                        <p:graphicImage url="resources/uabcl.png" class="logo" />
+        html,body{height:100%}
+        body{margin:0; font-family:Poppins, Arial, sans-serif}
+        .wrap{min-height:100%; display:flex; align-items:center; justify-content:center}
+        .card{
+            width:min(1100px, 94vw);
+            height:560px;
+            background:#fff;
+            border-radius:30px;
+            box-shadow:0 18px 40px rgba(0,0,0,.35);
+            display:grid;
+            grid-template-columns: 1.1fr 1fr;
+            overflow:hidden;
+        }
+
+        .left{
+            position:relative;
+            background:linear-gradient(180deg,#f4d9b4 0%, #f6e6cf 40%, #f2d2a6 100%);
+            display:flex; align-items:center; justify-content:center;
+        }
+        .left:before, .left:after{
+            content:""; position:absolute; inset:0; pointer-events:none;
+            background:
+                    radial-gradient(120px 90px at 25% 80%, #e49363 50%, transparent 52%),
+                    radial-gradient(170px 120px at 65% 22%, #e49363 55%, transparent 57%),
+                    radial-gradient(280px 160px at 50% 60%, rgba(255,255,255,.2) 40%, transparent 41%);
+            opacity:.55;
+        }
+        .dots{
+            position:absolute; top:40px; left:40px; opacity:.6;
+            background:
+                    radial-gradient(#fff 2px, transparent 2px) 0 0/18px 18px;
+            width:300px; height:180px; border-radius:18px;
+        }
+        .left h1{
+            font-family:"Playfair Display", serif;
+            font-weight:700;
+            font-size:42px;
+            color:#ffffff;
+            text-shadow:0 3px 14px rgba(0,0,0,.25);
+            letter-spacing:.5px;
+        }
+        .corner{
+            position:absolute; width:60px; height:60px; background:#f6e6cf; top:0; left:0; border-radius:0 0 50px 0;
+        }
+        .corner2{
+            position:absolute; width:60px; height:60px; background:#f6e6cf; bottom:0; left:0; border-radius:0 50px 0 0;
+        }
+
+        .right{ padding:56px 56px 40px; display:flex; flex-direction:column; gap:26px }
+        .right h2{
+            margin:0 0 6px 0;
+            font-size:52px; line-height:1;
+            font-weight:800;
+            color:#c09a3e;
+            text-shadow:0 4px 0 rgba(0,0,0,.18);
+        }
+        .right h2 span{ display:block }
+        .form{ margin-top:10px; display:flex; flex-direction:column; gap:16px }
+
+        .group{
+            position:relative;
+            background:#f6e3d4;
+            border-radius:999px;
+            padding:14px 18px 14px 54px;
+            box-shadow:0 6px 0 rgba(0,0,0,.15);
+        }
+        .group input{
+            width:100%; border:none; outline:none; background:transparent;
+            font-size:15px; color:#3a3a3a;
+        }
+        .group input::placeholder { color:#8b8b8b; opacity:1; }
+        .icon{
+            position:absolute; left:18px; top:50%; transform:translateY(-50%);
+            width:22px; height:22px; opacity:.7;
+        }
+        .link{ font-size:12px; color:#6282ff; text-decoration:underline; margin:-6px 10px 0 10px; align-self:flex-end }
+        .btn{
+            border:none; color:#111; font-weight:700; font-size:16px; cursor:pointer;
+            border-radius:999px; padding:14px; box-shadow:0 6px 0 rgba(0,0,0,.15);
+            transition:transform .06s ease;
+        }
+        .btn:active{ transform:translateY(1px) }
+
+        .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.35); backdrop-filter:blur(2px); z-index:9999; padding:16px}
+        .modal.show{display:flex}
+        .modal-card{width:420px; max-width:96vw; background:#fff; border-radius:18px; box-shadow:0 18px 60px rgba(0,0,0,.35); padding:18px 18px 14px; transform:scale(.96); opacity:0; animation:pop .18s ease-out forwards}
+        @keyframes pop{to{transform:scale(1); opacity:1}}
+        .modal-title{font-weight:700; color:#2b2b2b; margin-bottom:6px}
+        .modal-text{color:#475569; margin:6px 0 14px}
+        .actions{display:flex; justify-content:flex-end; gap:8px}
+        .btn-prim{background:#ea9567; color:#111; border:none; padding:8px 12px; border-radius:10px; cursor:pointer}
+        .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+        @media (max-width: 960px){
+            .card{ grid-template-columns: 1fr; height:auto }
+            .left{ height:230px }
+            .left h1{ font-size:36px }
+            .right{ padding:28px 22px 26px }
+            .right h2{ font-size:42px }
+        }
+    </style>
+</h:head>
+
+<h:body class="bg-brown">
+    <div class="wrap">
+        <div class="card">
+            <div class="left">
+                <div class="corner"></div>
+                <div class="corner2"></div>
+                <div class="dots"></div>
+                <h1>Bienvenido a SAUAP</h1>
+            </div>
+
+            <div class="right">
+                <h2><span>Iniciar</span><span>sesión</span></h2>
+
+                <h:form id="f" styleClass="form">
+                    <h:messages id="msgs" globalOnly="true" styleClass="sr-only"/>
+
+                    <div class="group chip-gray">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M3 7.5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9Zm1.6-.2 6.9 5.2a2 2 0 0 0 2.4 0l6.9-5.2" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <h:inputText value="#{loginUI.usuario.correo}" required="true"
+                                     requiredMessage="Ingresa tu correo" title="Correo electrónico"
+                                     pt:placeholder="Correo electrónico" pt:autocomplete="username"/>
                     </div>
-                    <div class="panel-body">
-                        <div class=" form-group">
-                            <p:inputText class ="form-control" placeholder ="Correo:" autocomplete="false" value ="#{loginUI.usuario.correo}" />
-                        </div>
-                        <div class="form-group">
-                            <p:password class ="form-control" placeholder="Contraseña: " value="#{loginUI.usuario.contrasena}" />
-                        </div>
-                        <p:commandButton update="messages" class = "btn btn-success" value ="Iniciar sesion" actionListener ="#{loginUI.login()}" />
 
+                    <div class="group chip-gray">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M6 10.5h12v7a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-7Z" stroke="#6b7280" stroke-width="1.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round"/></svg>
+                        <h:inputSecret value="#{loginUI.usuario.contrasena}" required="true"
+                                       requiredMessage="Ingresa tu contraseña" title="Contraseña"
+                                       pt:placeholder="Contraseña" pt:autocomplete="current-password"/>
                     </div>
-                </div>
-                
-            </h:form>
-            
+
+
+                    <h:commandButton value="Iniciar sesión"
+                                     actionListener="#{loginUI.login}"
+                                     styleClass="btn btn-orange"/>
+                </h:form>
+            </div>
         </div>
-            
-    </h:body>
+    </div>
+
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" aria-describedby="mText">
+        <div class="modal-card">
+            <div id="mTitle" class="modal-title">Información</div>
+            <div id="mText" class="modal-text">Texto</div>
+            <div class="actions">
+                <button type="button" class="btn-prim" id="mOk">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showModal(text, title){
+            const modal=document.getElementById('modal');
+            document.getElementById('mTitle').textContent = title || 'Información';
+            document.getElementById('mText').textContent  = text  || '';
+            modal.classList.add('show');
+            const close = ()=> modal.classList.remove('show');
+            document.getElementById('mOk').onclick = close;
+            modal.onclick = (e)=>{ if(e.target===modal) close(); };
+            document.addEventListener('keydown', (ev)=>{ if(ev.key==='Escape') close(); }, {once:true});
+        }
+
+        document.addEventListener('DOMContentLoaded', ()=>{
+            const params=new URLSearchParams(location.search);
+            if (params.has('expired')) showModal('Sesión expirada, por favor inicia sesión nuevamente', 'Sesión expirada');
+            if (params.has('denied'))  showModal('Acceso denegado: no tienes permisos para esta sección', 'Acceso denegado');
+
+            const msgs = document.getElementById('f:msgs') || document.querySelector('[id$="msgs"]');
+            if (msgs){
+                const txt = (msgs.textContent || msgs.innerText || "").trim();
+                if (txt.length>0){
+                    const first = txt.split('\n').filter(Boolean)[0] || txt;
+                    showModal(first, 'Atención');
+                }
+            }
+        });
+    </script>
+</h:body>
 </html>

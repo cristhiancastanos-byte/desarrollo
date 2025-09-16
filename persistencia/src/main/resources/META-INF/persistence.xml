@@ -7,22 +7,17 @@
     <persistence-unit name="persistencePU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <!-- Entidades -->
         <class>mx.desarrollo.entity.Usuario</class>
 
         <properties>
-            <!-- Conexión -->
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="hibernate.jdbc.time_zone" value="UTC"/>
 
-            <!-- Si tu MySQL usa otro puerto, cambia 3306 por el tuyo -->
             <property name="jakarta.persistence.jdbc.url"
                       value="jdbc:mysql://localhost:3306/desarrollo?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC"/>
-            <!-- Usuario dedicado para el proyecto -->
             <property name="jakarta.persistence.jdbc.user" value="sauap"/>
             <property name="jakarta.persistence.jdbc.password" value="s4uap_local!"/>
 
-            <!-- Hibernate -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="none"/>
             <property name="hibernate.show_sql" value="false"/>

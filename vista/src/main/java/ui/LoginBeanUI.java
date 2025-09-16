@@ -41,7 +41,6 @@ public class LoginBeanUI implements Serializable {
                 var ext = FacesContext.getCurrentInstance().getExternalContext();
                 ext.getSessionMap().put("usuarioLogueado", us);
 
-                // === NUEVO: emitir token y setear cookie ===
                 TokenBundle tb = helper.emitirToken(us);
                 HttpServletRequest req = (HttpServletRequest) ext.getRequest();
                 HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
@@ -58,7 +57,6 @@ public class LoginBeanUI implements Serializable {
                 c.setPath(path);
                 c.setMaxAge((int) Math.max(0, maxAge));
                 resp.addCookie(c);
-                // SameSite (no hay setter en Servlet): añadir header adicional
                 resp.addHeader("Set-Cookie",
                         LoginHelper.COOKIE_NAME + "=" + tb.token +
                                 "; Max-Age=" + maxAge +
@@ -84,11 +82,9 @@ public class LoginBeanUI implements Serializable {
         HttpServletRequest req = (HttpServletRequest) ext.getRequest();
         HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
 
-        // Limpiar token en BD si hay usuario
         if (usuarioLogueado != null) {
             new mx.avanti.desarrollo.dao.UsuarioDAO().clearToken(usuarioLogueado.getId());
         }
-        // Borrar cookie
         String path = req.getContextPath();
         if (path == null || path.isEmpty()) path = "/";
         Cookie bye = new Cookie(LoginHelper.COOKIE_NAME, "");
@@ -100,12 +96,10 @@ public class LoginBeanUI implements Serializable {
         resp.addHeader("Set-Cookie", LoginHelper.COOKIE_NAME + "=; Max-Age=0; Path=" + path +
                 "; HttpOnly" + (req.isSecure() ? "; Secure" : "") + "; SameSite=Lax");
 
-        // invalidar sesión
         ext.invalidateSession();
         ext.redirect(ext.getRequestContextPath() + "/login.xhtml?expired=1");
     }
 
-    // ===== Getters/Setters =====
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
     public Usuario getUsuarioLogueado() { return usuarioLogueado; }

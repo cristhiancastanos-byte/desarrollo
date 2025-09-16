@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 public class UsuarioDAO {
 
-    /** Compat: viejo (ya no lo usamos) */
     public Usuario findByCorreoAndPass(String correo, String pass) {
         EntityManager em = JpaUtil.em();
         try {
@@ -35,7 +34,6 @@ public class UsuarioDAO {
         } finally { em.close(); }
     }
 
-    // === NUEVO: buscar por token
     public Usuario findByToken(String token) {
         if (token == null || token.isEmpty()) return null;
         EntityManager em = JpaUtil.em();
@@ -66,7 +64,6 @@ public class UsuarioDAO {
         } finally { em.close(); }
     }
 
-    // -------- Intentos / bloqueo ----------
     public int addFailedAttempt(Integer id) {
         EntityManager em = JpaUtil.em();
         try {
@@ -101,7 +98,6 @@ public class UsuarioDAO {
         } finally { em.close(); }
     }
 
-    // -------- NUEVO: token absoluto ----------
     public void setToken(Integer id, String token, LocalDateTime expira) {
         EntityManager em = JpaUtil.em();
         try {

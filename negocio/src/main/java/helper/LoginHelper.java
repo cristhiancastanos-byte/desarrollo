@@ -21,10 +21,9 @@ public class LoginHelper {
     private static final int MAX_INTENTOS = 5;
     private static final int MINUTOS_BLOQUEO = 15;
 
-    // === Config del token absoluto ===
     public static final String COOKIE_NAME = "SAUAP_TOKEN";
-    private static final int TOKEN_BYTES = 32; // 256 bits
-    private static final int TOKEN_HORAS = 2;  // <-- cambia aquí la vigencia absoluta
+    private static final int TOKEN_BYTES = 32;
+    private static final int TOKEN_HORAS = 2;
 
     private static final ConcurrentHashMap<String, ShadowAttempts> SHADOW = new ConcurrentHashMap<>();
     private static class ShadowAttempts { int count = 0; LocalDateTime until = null; }
@@ -76,7 +75,6 @@ public class LoginHelper {
             }
         }
 
-        // Sombra si no existe
         ShadowAttempts sa = SHADOW.computeIfAbsent(correo, k -> new ShadowAttempts());
         if (sa.until != null && ahora.isBefore(sa.until)) {
             return AuthResult.locked("Cuenta bloqueada por intentos fallidos. Inténtalo a las " + sa.until.format(HHmm) + ".");
@@ -92,14 +90,12 @@ public class LoginHelper {
         return AuthResult.invalid("Credenciales inválidas. Intentos restantes: " + quedan + ".");
     }
 
-    // ===== NUEVO: Emisión de token absoluto (cookie + BD) =====
     public static class TokenBundle {
         public final String token;
         public final LocalDateTime expira;
         public TokenBundle(String t, LocalDateTime e){ token=t; expira=e; }
     }
 
-    /** Genera y guarda un token absoluto en BD para el usuario. */
     public TokenBundle emitirToken(Usuario u) {
         byte[] raw = new byte[TOKEN_BYTES];
         new SecureRandom().nextBytes(raw);
