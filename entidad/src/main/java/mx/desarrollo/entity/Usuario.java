@@ -1,62 +1,63 @@
 package mx.desarrollo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "usuario")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idusuario", nullable = false)
+    @Column(name = "idusuario")
     private Integer id;
 
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "correo", nullable = false, length = 45)
+    @Column(name = "correo", nullable = false, unique = true, length = 100)
     private String correo;
 
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "contrasena", nullable = false, length = 45)
+    @Column(name = "contrasena", nullable = false, length = 100)
     private String contrasena;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idAlumno", nullable = false)
-    private Alumno idAlumno;
+    // 0 = profesor, 1 = admin
+    @Column(name = "es_admin", nullable = false)
+    private Integer esAdmin = 0;
 
-    public Integer getId() {
-        return id;
-    }
+    // Seguridad por intentos
+    @Column(name = "intentos_fallidos", nullable = false)
+    private Integer intentosFallidos = 0;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @Column(name = "bloqueado_hasta")
+    private LocalDateTime bloqueadoHasta;
 
-    public String getCorreo() {
-        return correo;
-    }
+    // --- NUEVO: token absoluto
+    @Column(name = "session_token", length = 64)
+    private String sessionToken;
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
+    @Column(name = "token_expira")
+    private LocalDateTime tokenExpira;
 
-    public String getContrasena() {
-        return contrasena;
-    }
+    // ===== Getters/Setters =====
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
-    }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
 
-    public Alumno getIdAlumno() {
-        return idAlumno;
-    }
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
 
-    public void setIdAlumno(Alumno idAlumno) {
-        this.idAlumno = idAlumno;
-    }
+    public Integer getEsAdmin() { return esAdmin; }
+    public void setEsAdmin(Integer esAdmin) { this.esAdmin = esAdmin; }
 
+    public Integer getIntentosFallidos() { return intentosFallidos; }
+    public void setIntentosFallidos(Integer intentosFallidos) { this.intentosFallidos = intentosFallidos; }
+
+    public LocalDateTime getBloqueadoHasta() { return bloqueadoHasta; }
+    public void setBloqueadoHasta(LocalDateTime bloqueadoHasta) { this.bloqueadoHasta = bloqueadoHasta; }
+
+    public String getSessionToken() { return sessionToken; }
+    public void setSessionToken(String sessionToken) { this.sessionToken = sessionToken; }
+
+    public LocalDateTime getTokenExpira() { return tokenExpira; }
+    public void setTokenExpira(LocalDateTime tokenExpira) { this.tokenExpira = tokenExpira; }
 }

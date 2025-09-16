@@ -39,6 +39,14 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- BCrypt para hashing de contraseñas -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+
 
         <!-- Para compatibilidad con javax.annotation.Generated -->
         <dependency>
