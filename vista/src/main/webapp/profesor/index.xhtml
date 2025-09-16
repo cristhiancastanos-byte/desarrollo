@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+    <title>Profesor dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <style>
+        :root{--sidebar:#262b33;--text:#f5f6f7;--accent1:#e3a56b;--accent2:#b3823a;}
+        *{box-sizing:border-box}
+        body{margin:0;background:#15181c;color:var(--text);font-family:Poppins,Arial,sans-serif}
+        .wrap{padding:14px}
+        .shell{background:#101215;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;min-height:70vh}
+
+        .header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(90deg,var(--accent1),var(--accent2));}
+        .leftTitle{display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer}
+        .pfp{width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:20px}
+        .leftTitle span{user-select:none}
+        .logout{display:flex;align-items:center;gap:8px;cursor:pointer;color:#fff;text-decoration:none}
+        .logout svg{width:26px;height:26px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.3))}
+
+        .drawer{position:fixed;top:0;left:0;height:100vh;width:280px;background:#262b33;transform:translateX(-105%);transition:transform .22s ease;box-shadow:0 0 0 rgba(0,0,0,0);padding:16px;z-index:9998}
+        .drawer.open{transform:translateX(0);box-shadow:12px 0 40px rgba(0,0,0,.35)}
+        .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:9997}
+        .overlay.show{display:block}
+
+        .search{width:100%;border:none;border-radius:12px;background:#3a404a;color:#e8eaed;padding:12px 14px;outline:none;margin-bottom:12px}
+        .menu{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+        .item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;color:#eaecef;cursor:pointer}
+        .item:hover,.item.active{background:#343b46}
+        .item svg{width:24px;height:24px}
+
+        .content{padding:18px;background:#0f1318;min-height:55vh}
+        .hidden{display:none}
+        .card{background:#151a21;border:1px solid #2a3039;border-radius:12px;padding:14px;margin-bottom:14px}
+        .title{font-weight:700;margin:0 0 8px 0}
+        .input{width:100%;background:#1e2430;border:1px solid #2c3440;border-radius:10px;color:#e8eaed;padding:10px 12px;outline:none}
+
+        .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);z-index:9999}
+        .modal.show{display:flex}
+        .dialog{width:520px;max-width:94vw;background:#232832;border-radius:10px;box-shadow:0 16px 40px rgba(0,0,0,.45);padding:18px;border:1px solid #3a3f48}
+        .actions{display:flex;justify-content:flex-end;gap:10px}
+        .btn{border:none;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:600}
+        .btn.gray{background:#3b414c;color:#eaeef3}
+        .btn.red{background:#e24d4d;color:#fff}
+    </style>
+</h:head>
+<h:body>
+    <div class="wrap">
+        <div class="shell">
+            <div class="header">
+                <div class="leftTitle" onclick="toggleDrawer()">
+                    <div class="pfp">👤</div>
+                    <span>Profesor</span>
+                </div>
+                <a class="logout" href="#" onclick="openLogout();return false;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><path d="M10 6H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"/><path d="M15 16l4-4-4-4"/><path d="M19 12H9"/></svg>
+                    <span>Cerrar sesión</span>
+                </a>
+            </div>
+
+            <main id="content" class="content">
+                <section id="sec-asig" class="hidden">
+                    <div class="card">
+                        <h3 class="title">Mis asignaciones</h3>
+                        <p>Listado de unidades/grupos asignados.</p>
+                        <div class="card" style="background:#12171d">—</div>
+                    </div>
+                </section>
+
+                <section id="sec-cons" class="hidden">
+                    <div class="card">
+                        <h3 class="title">Consultas</h3>
+                        <input class="input" placeholder="Buscar en mis unidades/asignaciones"/>
+                        <div style="height:12px"></div>
+                        <button class="btn gray">Buscar</button>
+                    </div>
+                    <div class="card"><h3 class="title">Resultados</h3><p>—</p></div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <aside id="drawer" class="drawer" aria-hidden="true">
+        <input class="search" placeholder="Buscar"/>
+        <ul class="menu">
+            <li class="item" data-target="sec-asig" onclick="showSec(this)"><svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg><span>Asignaciones</span></li>
+            <li class="item" data-target="sec-cons" onclick="showSec(this)"><svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span>Consultas</span></li>
+        </ul>
+    </aside>
+    <div id="overlay" class="overlay" onclick="toggleDrawer()"></div>
+
+    <div id="mLogout" class="modal" role="dialog" aria-modal="true" aria-labelledby="ttl">
+        <div class="dialog">
+            <h3 id="ttl">Cerrar sesión</h3>
+            <p>¿Seguro que quieres cerrar sesión?</p>
+            <div class="actions">
+                <button class="btn gray" onclick="closeLogout()">Cancelar</button>
+                <h:form style="display:inline">
+                    <h:commandButton value="Cerrar sesión" actionListener="#{loginUI.logout}" styleClass="btn red"/>
+                </h:form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDrawer(){
+            const d = document.getElementById('drawer');
+            const o = document.getElementById('overlay');
+            const open = !d.classList.contains('open');
+            d.classList.toggle('open', open);
+            o.classList.toggle('show', open);
+            d.setAttribute('aria-hidden', open ? 'false':'true');
+        }
+        function showSec(el){
+            document.querySelectorAll('#drawer .item').forEach(i=>i.classList.remove('active'));
+            el.classList.add('active');
+            const id = el.getAttribute('data-target');
+            document.querySelectorAll('#content > section').forEach(s=>s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            toggleDrawer();
+        }
+
+        function openLogout(){ document.getElementById('mLogout').classList.add('show'); }
+        function closeLogout(){ document.getElementById('mLogout').classList.remove('show'); }
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted || (performance.getEntriesByType('navigation')[0]?.type === 'back_forward')) {
+                window.location.reload();
+            }
+        });
+    </script>
+</h:body>
+</html>
