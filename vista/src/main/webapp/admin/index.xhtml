@@ -13,7 +13,6 @@
         .wrap{padding:14px}
         .shell{background:#101215;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;min-height:70vh}
 
-        /* Header */
         .header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(90deg,var(--accent1),var(--accent2));}
         .leftTitle{display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer}
         .pfp{width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:20px}
@@ -21,27 +20,27 @@
         .logout{display:flex;align-items:center;gap:8px;cursor:pointer;color:#fff;text-decoration:none}
         .logout svg{width:26px;height:26px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.3))}
 
-        /* Drawer */
         .drawer{position:fixed;top:0;left:0;height:100vh;width:280px;background:var(--sidebar);transform:translateX(-105%);transition:transform .22s ease;box-shadow:0 0 0 rgba(0,0,0,0);padding:16px;z-index:9998}
         .drawer.open{transform:translateX(0);box-shadow:12px 0 40px rgba(0,0,0,.35)}
         .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:9997}
         .overlay.show{display:block}
         .search{width:100%;border:none;border-radius:12px;background:#3a404a;color:#e8eaed;padding:12px 14px;outline:none;margin-bottom:12px}
         .menu{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-        .item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;color:#eaecef;cursor:pointer}
-        .item:hover,.item.active{background:#343b46}
+        .item{display:block;color:#eaecef}
+        .item > a, .item > button, .sub-toggle{
+            width:100%;display:flex;align-items:center;gap:12px;
+            padding:12px;border-radius:12px;background:transparent;border:none;color:#eaecef;cursor:pointer;text-align:left
+        }
+        .item > a:hover, .item > button:hover, .sub-toggle:hover{background:#343b46}
         .item svg{width:24px;height:24px}
 
-        /* Contenido (BLANCO) */
         .content{padding:28px;background:#ffffff;min-height:55vh}
         .hidden{display:none}
 
-        /* Tarjetas genéricas */
         .card{background:#151a21;border:1px solid #2a3039;border-radius:12px;padding:14px;margin-bottom:14px}
         .title{font-weight:700;margin:0 0 8px 0}
         .input{width:100%;background:#1e2430;border:1px solid #2c3440;border-radius:10px;color:#e8eaed;padding:10px 12px;outline:none}
 
-        /* === FORMULARIOS estilo dark sobre fondo blanco === */
         .form-wrapper{display:flex;justify-content:center}
         .form-card{
             width:860px;max-width:94vw;margin:14px auto 0 auto;
@@ -52,7 +51,6 @@
         .grid-u{display:grid;grid-template-columns:repeat(3,minmax(200px,1fr));gap:14px}
         .grid-u > .span-3{grid-column:1/-1}
 
-        /* === NUEVO: grid de Profesor (2 columnas) === */
         .grid-p{display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:14px}
         .grid-p > .span-2{grid-column:1/-1}
 
@@ -63,6 +61,7 @@
         }
         .hint{font-size:12px;color:#9aa3af;margin-top:6px}
         .hint.warn{color:#e07a7a}
+        .item.has-sub.hover:hover .caret{transform:rotate(180deg)}
 
         .btn-prim{
             padding:12px 16px;border-radius:12px;border:none;background:#d0925b;
@@ -71,7 +70,6 @@
         .btn-prim:hover{filter:brightness(1.05)}
         .center-actions{display:flex;justify-content:center;margin-top:16px}
 
-        /* Modales */
         .modal{
             position:fixed; inset:0; display:none;
             align-items:center; justify-content:center;
@@ -90,7 +88,6 @@
         .btn.gray{background:#3b414c;color:#eaeef3}
         .btn.red{background:#e24d4d;color:#fff}
 
-        /* Chips (para multiselección en otras secciones) */
         .chips table{border-collapse:separate;border-spacing:10px 8px}
         .chips input[type="checkbox"]{display:none}
         .chips label{
@@ -103,16 +100,27 @@
             box-shadow:0 0 0 2px rgba(208,146,91,.25);
         }
 
-        /* Tabla simple */
         table{width:100%;border-collapse:collapse;margin-top:18px}
         th,td{padding:10px 12px;border-bottom:1px solid #40454f}
         th{text-align:left;color:#cfd4dc}
+
+        .item.has-sub .caret{margin-left:auto;transition:transform .15s ease}
+        .item.has-sub.open .caret{transform:rotate(180deg)}
+        .submenu{list-style:none;margin:6px 0 0 44px;padding:0;display:grid;gap:8px}
+        .submenu[hidden]{display:none}
+        .submenu a{
+            color:#cfd4dc;text-decoration:none;font-style:italic;
+            display:inline-block;padding:6px 8px;border-radius:8px
+        }
+        .submenu a:hover{background:#343b46;color:#fff}
+        .item.has-sub.hover .submenu{display:none}
+        .item.has-sub.hover:hover .submenu{display:grid}
+        .no-click{pointer-events:none}
     </style>
 </h:head>
 <h:body>
     <div class="wrap">
         <div class="shell">
-            <!-- Header -->
             <div class="header">
                 <div class="leftTitle" onclick="toggleDrawer()">
                     <div class="pfp">👤</div>
@@ -127,8 +135,6 @@
             </div>
 
             <main id="content" class="content">
-                <!-- ===================== REGISTRAR PROFESOR ===================== -->
-                <!-- ===================== REGISTRAR PROFESOR ===================== -->
                 <section id="sec-prof" class="hidden">
                     <div class="form-wrapper">
                         <div class="form-card">
@@ -182,7 +188,6 @@
 
                                 <h:messages globalOnly="true" layout="table" style="color:#ffb3b3;margin-top:14px"/>
 
-                                <!-- Disparo modal éxito con la contraseña en okMsg -->
                                 <h:panelGroup rendered="#{!facesContext.validationFailed and profesorUI.mostrarOk}">
                                     <script>(function(){ openProfOk("#{profesorUI.okMsg}"); })();</script>
                                 </h:panelGroup>
@@ -191,7 +196,6 @@
                     </div>
                 </section>
 
-                <!-- Modal éxito: Profesor (colócalo abajo donde tienes los demás modales) -->
                 <div id="mProfOk" class="modal" role="dialog" aria-modal="true"
                      aria-labelledby="profOkTtl" aria-describedby="profOkTxt">
                     <div class="dialog small">
@@ -202,28 +206,13 @@
                         </div>
                     </div>
                 </div>
-                <script>
-                    function openProfOk(texto){
-                        const m = document.getElementById('mProfOk');
-                        const t = document.getElementById('profOkTxt');
-                        if (t) t.textContent = texto || 'Profesor registrado correctamente.';
-                        if (m) m.classList.add('show');
-                    }
-                    function closeProfOk(){
-                        const m = document.getElementById('mProfOk');
-                        if (m) m.classList.remove('show');
-                    }
-                </script>
 
-
-                <!-- ===================== UNIDADES ===================== -->
                 <section id="sec-unidades" class="">
                     <div class="form-wrapper">
                         <div class="form-card">
                             <h2>Registrar unidad</h2>
                             <h:form id="fUnidad">
                                 <div class="grid-u">
-                                    <!-- Nombre -->
                                     <div class="span-3">
                                         <label class="lbl" for="uNombre">Nombre</label>
                                         <h:inputText id="uNombre" value="#{unidadUI.nombre}" maxlength="50" required="true"
@@ -231,7 +220,6 @@
                                         <div class="hint warn">Este campo es obligatorio</div>
                                     </div>
 
-                                    <!-- Tipo -->
                                     <div>
                                         <label class="lbl" for="uTipo">Tipo</label>
                                         <h:selectOneMenu id="uTipo" value="#{unidadUI.tipo}" styleClass="input" required="true">
@@ -240,7 +228,6 @@
                                         </h:selectOneMenu>
                                     </div>
 
-                                    <!-- Horas -->
                                     <div>
                                         <label class="lbl" for="uHoras">Horas (0–4)</label>
                                         <h:inputText id="uHoras" value="#{unidadUI.horas}" required="true"
@@ -257,10 +244,8 @@
                                     </h:commandButton>
                                 </div>
 
-                                <!-- Mensajes de validación/errores -->
                                 <h:messages globalOnly="true" layout="table" style="color:#ffb3b3;margin-top:14px"/>
 
-                                <!-- Script modal éxito (solo si hubo éxito) -->
                                 <h:panelGroup rendered="#{!facesContext.validationFailed and unidadUI.mostrarOk}">
                                     <script>(function(){ openUnidadOk("#{unidadUI.okMsg}"); })();</script>
                                 </h:panelGroup>
@@ -270,7 +255,74 @@
                     </div>
                 </section>
 
-                <!-- ============= ASIGNACIONES / CONSULTAS (placeholders) ============= -->
+                <section id="sec-u-mod" class="hidden">
+                    <div class="card"><h3 class="title">Modificar Unidad</h3><p style="color:#cfd4dc">Plantilla (pendiente de funcionalidad).</p></div>
+                </section>
+                <section id="sec-u-eli" class="hidden">
+                    <div class="card"><h3 class="title">Eliminar Unidad</h3><p style="color:#cfd4dc">Plantilla (pendiente de funcionalidad).</p></div>
+                </section>
+                <section id="sec-u-cons" class="hidden">
+                    <div class="card"><h3 class="title">Consultar Unidades</h3><p style="color:#cfd4dc">Plantilla (pendiente de funcionalidad).</p></div>
+                </section>
+
+                <section id="sec-asig-crear" class="hidden">
+                    <div class="form-wrapper">
+                        <div class="form-card">
+                            <h2>Crear asignación</h2>
+                            <h:form id="fAsig">
+                                <div class="grid-u">
+                                    <div class="span-3">
+                                        <label class="lbl" for="aProf">Selecciona profesor</label>
+                                        <h:selectOneMenu id="aProf" value="#{asignacionUI.profesorId}" styleClass="input" required="true">
+                                            <f:selectItem itemLabel="Selecciona..." itemValue=""/>
+                                            <f:selectItems value="#{asignacionUI.profesores}" var="p"
+                                                           itemValue="#{p.id}"
+                                                           itemLabel="#{p.nombre} #{p.apellidoPaterno} #{p.apellidoMaterno}"/>
+                                        </h:selectOneMenu>
+                                        <div class="hint warn">Campo obligatorio</div>
+                                    </div>
+
+                                    <div class="span-3">
+                                        <label class="lbl" for="aUnis">Selecciona unidades</label>
+                                        <h:selectManyListbox id="aUnis" value="#{asignacionUI.unidadIds}" styleClass="input" required="true" size="6">
+                                            <f:selectItems value="#{asignacionUI.unidades}" var="u"
+                                                           itemValue="#{u.id}"
+                                                           itemLabel="#{u.nombre}"/>
+                                            <f:converter converterId="jakarta.faces.Integer" />
+                                        </h:selectManyListbox>
+                                    </div>
+
+                                    <div class="span-3">
+                                        <label class="lbl" for="aHorario">Horario</label>
+                                        <h:inputText id="aHorario" value="#{asignacionUI.horario}" maxlength="50" required="true"
+                                                     styleClass="input" placeholder="Ej. 07:00-08:00 / Matutino"/>
+                                        <div class="hint">Formato sugerido: HH:mm + turno</div>
+                                    </div>
+                                </div>
+
+                                <div class="center-actions">
+                                    <h:commandButton value="Buscar"
+                                                     action="#{asignacionUI.guardar}"
+                                                     styleClass="btn-prim">
+                                        <f:ajax execute="@form" render="@form msgs" />
+                                    </h:commandButton>
+                                </div>
+
+                                <h:messages id="msgs" globalOnly="true" layout="table" style="color:#ffb3b3;margin-top:14px"/>
+
+
+
+                                <h:panelGroup rendered="#{!facesContext.validationFailed and asignacionUI.mostrarOk}">
+                                    <script>(function(){ openAsigOk("#{asignacionUI.okMsg}"); })();</script>
+                                </h:panelGroup>
+                            </h:form>
+                        </div>
+                    </div>
+                </section>
+                <section id="sec-asig-prof" class="hidden">
+                    <div class="card"><h3 class="title">Consultar por Profesor</h3><p style="color:#cfd4dc">Plantilla (pendiente de funcionalidad).</p></div>
+                </section>
+
                 <section id="sec-asig" class="hidden">
                     <div class="card"><h3 class="title">Asignaciones</h3><p>—</p></div>
                 </section>
@@ -281,19 +333,53 @@
         </div>
     </div>
 
-    <!-- Drawer -->
     <aside id="drawer" class="drawer" aria-hidden="true">
         <input class="search" placeholder="Buscar"/>
+
         <ul class="menu">
-            <li class="item" data-target="sec-prof" onclick="showSec(this)"><svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M6 20a6 6 0 0 1 12 0"/></svg><span>Profesor</span></li>
-            <li class="item" data-target="sec-unidades" onclick="showSec(this)"><svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><path d="M4 19h16M4 5h16M8 9h8M8 15h8"/></svg><span>Unidades</span></li>
-            <li class="item" data-target="sec-asig" onclick="showSec(this)"><svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg><span>Asignaciones</span></li>
-            <li class="item" data-target="sec-cons" onclick="showSec(this)"><svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span>Consultas</span></li>
+            <li class="item">
+                <a href="#!" onclick="showSecById('sec-prof');return false;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M6 20a6 6 0 0 1 12 0"/></svg>
+                    <span>Profesor</span>
+                </a>
+            </li>
+
+            <li class="item has-sub hover" id="sub-unidades-root">
+                <div class="sub-toggle no-click">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><path d="M4 19h16M4 5h16M8 9h8M8 15h8"/></svg>
+                    <span>Unidades</span>
+                    <span class="caret" aria-hidden="true">▾</span>
+                </div>
+                <ul id="sub-unidades" class="submenu">
+                    <li><a href="#!" onclick="showSecById('sec-unidades');return false;">Registrar unidad</a></li>
+                    <li><a href="#!" onclick="showSecById('sec-u-mod');return false;">Modificar unidad</a></li>
+                    <li><a href="#!" onclick="showSecById('sec-u-eli');return false;">Eliminar unidad</a></li>
+                    <li><a href="#!" onclick="showSecById('sec-u-cons');return false;">Consultar unidad</a></li>
+                </ul>
+            </li>
+
+            <li class="item has-sub hover">
+                <div class="sub-toggle no-click">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+                    <span>Asignaciones</span>
+                    <span class="caret" aria-hidden="true">▾</span>
+                </div>
+                <ul class="submenu">
+                    <li><a href="#!" onclick="showSecById('sec-asig-crear');return false;">Crear Asignación / Asignar Unidad a Profesor</a></li>
+                    <li><a href="#!" onclick="showSecById('sec-asig-prof');return false;">Consultar por Profesor</a></li>
+                </ul>
+            </li>
+
+            <li class="item">
+                <a href="#!" onclick="showSecById('sec-cons');return false;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                    <span>Consultas</span>
+                </a>
+            </li>
         </ul>
     </aside>
     <div id="overlay" class="overlay" onclick="toggleDrawer()"></div>
 
-    <!-- Logout modal -->
     <div id="mLogout" class="modal" role="dialog" aria-modal="true" aria-labelledby="ttl">
         <div class="dialog">
             <h3 id="ttl">Cerrar sesión</h3>
@@ -307,7 +393,6 @@
         </div>
     </div>
 
-    <!-- Modal éxito: Unidad -->
     <div id="mUnidadOk" class="modal" role="dialog" aria-modal="true"
          aria-labelledby="unOkTtl" aria-describedby="unOkTxt">
         <div class="dialog small">
@@ -318,15 +403,13 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal éxito: Profesor -->
-    <div id="mProfOk" class="modal" role="dialog" aria-modal="true"
-         aria-labelledby="profOkTtl" aria-describedby="profOkTxt">
+    <div id="mAsigOk" class="modal" role="dialog" aria-modal="true"
+         aria-labelledby="asigOkTtl" aria-describedby="asigOkTxt" style="display:none">
         <div class="dialog small">
-            <h3 id="profOkTtl" style="margin:0 0 10px 0">Profesor registrado</h3>
-            <p id="profOkTxt" style="margin:0 0 16px 0; color:#cfd4dc">Se guardó correctamente.</p>
+            <h3 id="asigOkTtl" style="margin:0 0 10px 0">Asignación guardada</h3>
+            <p id="asigOkTxt" style="margin:0 0 16px 0; color:#1f2937">Asignación guardada correctamente.</p>
             <div class="actions center">
-                <button type="button" class="btn gray" onclick="closeProfOk()">Aceptar</button>
+                <button type="button" class="btn-sec" onclick="closeAsigOk()">Aceptar</button>
             </div>
         </div>
     </div>
@@ -341,17 +424,32 @@
             d.setAttribute('aria-hidden', open ? 'false':'true');
         }
         function showSec(el){
-            document.querySelectorAll('#drawer .item').forEach(i=>i.classList.remove('active'));
-            el.classList.add('active');
+            document.querySelectorAll('#drawer .item > a').forEach(i=>i.parentElement.classList.remove('active'));
+            el.parentElement?.classList?.add('active');
             const id = el.getAttribute('data-target');
             document.querySelectorAll('#content > section').forEach(s=>s.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             toggleDrawer();
         }
+        function showSecById(id){
+            document.querySelectorAll('#content > section').forEach(s=>s.classList.add('hidden'));
+            const sec = document.getElementById(id);
+            if (sec) sec.classList.remove('hidden');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        function toggleSub(rootId, listId){
+            const root = document.getElementById(rootId);
+            const list = document.getElementById(listId);
+            const btn  = root?.querySelector('.sub-toggle');
+            const expanded = btn?.getAttribute('aria-expanded') === 'true';
+            btn?.setAttribute('aria-expanded', (!expanded).toString());
+            if (!expanded){ list?.removeAttribute('hidden'); root?.classList.add('open'); }
+            else { list?.setAttribute('hidden',''); root?.classList.remove('open'); }
+        }
+
         function openLogout(){ document.getElementById('mLogout').classList.add('show'); }
         function closeLogout(){ document.getElementById('mLogout').classList.remove('show'); }
 
-        // Modal éxito Unidades
         function openUnidadOk(texto){
             const m = document.getElementById('mUnidadOk');
             const t = document.getElementById('unOkTxt');
@@ -363,7 +461,6 @@
             if (m) m.classList.remove('show');
         }
 
-        // Modal éxito Profesor
         function openProfOk(texto){
             const m = document.getElementById('mProfOk');
             const t = document.getElementById('profOkTxt');
@@ -374,8 +471,17 @@
             const m = document.getElementById('mProfOk');
             if (m) m.classList.remove('show');
         }
+        function openAsigOk(texto){
+            const m=document.getElementById('mAsigOk');
+            const t=document.getElementById('asigOkTxt');
+            if(t) t.textContent = texto || 'Asignación guardada correctamente.';
+            if(m){ m.style.display='flex'; m.classList.add('show'); }
+        }
+        function closeAsigOk(){
+            const m=document.getElementById('mAsigOk');
+            if(m){ m.classList.remove('show'); m.style.display='none'; }
+        }
 
-        // Anti-volver cacheado
         window.addEventListener('pageshow', function (e) {
             if (e.persisted || (performance.getEntriesByType('navigation')[0]?.type === 'back_forward')) {
                 window.location.reload();

@@ -10,6 +10,8 @@
         <class>mx.desarrollo.entity.Usuario</class>
         <class>mx.desarrollo.entity.Unidad</class>
         <class>mx.desarrollo.entity.Profesor</class>
+        <class>mx.desarrollo.entity.Asignacion</class>
+
 
 
         <properties>

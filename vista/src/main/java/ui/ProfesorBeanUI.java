@@ -46,7 +46,6 @@ public class ProfesorBeanUI implements Serializable {
         nombre = apellidoPaterno = apellidoMaterno = rfc = correo = "";
     }
 
-    // ===== Getters / Setters =====
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getApellidoPaterno() { return apellidoPaterno; }

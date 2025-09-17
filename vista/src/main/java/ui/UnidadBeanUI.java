@@ -15,11 +15,11 @@ import java.util.List;
 public class UnidadBeanUI implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String nombre;   // requerido, <=50
-    private String tipo;     // CLASE | TALLER | LABORATORIO
-    private Integer horas;   // 0..4
+    private String nombre;
+    private String tipo;
+    private Integer horas;
 
-    private boolean mostrarOk;  // dispara el modal
+    private boolean mostrarOk;
     private String okMsg;
 
     private final UnidadService service = new UnidadService();
@@ -29,15 +29,13 @@ public class UnidadBeanUI implements Serializable {
     }
 
     public String guardar() {
-        // MUY IMPORTANTE: si la validación falla, JSF no entra aquí,
-        // pero cuando sí entra (caso válido), reseteamos antes:
         mostrarOk = false;
         okMsg = null;
 
         try {
-            service.crear(nombre, tipo, horas);   // persiste
+            service.crear(nombre, tipo, horas);
             okMsg = "Unidad registrada correctamente";
-            mostrarOk = true;                     // solo en éxito
+            mostrarOk = true;
             limpiar();
         } catch (IllegalArgumentException ex) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -50,12 +48,11 @@ public class UnidadBeanUI implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             msg != null ? msg : "Error inesperado al guardar la unidad.", null));
         }
-        return null; // permanecer en la misma página
+        return null;
     }
 
     private void limpiar() { nombre = ""; tipo = null; horas = null; }
 
-    // Getters/Setters
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getTipo() { return tipo; }

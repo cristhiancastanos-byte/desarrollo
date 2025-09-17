@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 public class UsuarioDAO {
 
-    // === NUEVO: verifica si ya existe un usuario con ese correo ===
     public boolean existsByCorreo(String correo) {
         if (correo == null) return false;
         EntityManager em = JpaUtil.em();
