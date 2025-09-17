@@ -3,6 +3,7 @@ package mx.avanti.desarrollo.service;
 import mx.avanti.desarrollo.dao.UnidadDAO;
 import mx.desarrollo.entity.Unidad;
 
+import java.util.List;
 import java.util.Set;
 
 public class UnidadService {
@@ -14,22 +15,41 @@ public class UnidadService {
         validarNombre(nombre);
         validarTipo(tipo);
         validarHoras(horas);
-
         Unidad u = new Unidad();
         u.setNombre(nombre.trim());
         u.setTipo(tipo.trim().toUpperCase());
         u.setHoras(horas);
-
         dao.save(u);
         return u;
     }
 
-    // ===== Reglas =====
+    public Unidad actualizar(Integer id, String nombre, String tipo, Integer horas) {
+        if (id == null) throw new IllegalArgumentException("Selecciona una unidad.");
+        validarNombre(nombre);
+        validarTipo(tipo);
+        validarHoras(horas);
+        Unidad u = dao.findById(id);
+        if (u == null) throw new IllegalArgumentException("La unidad no existe.");
+        u.setNombre(nombre.trim());
+        u.setTipo(tipo.trim().toUpperCase());
+        u.setHoras(horas);
+        dao.save(u);
+        return u;
+    }
+
+    public Unidad obtener(Integer id) {
+        if (id == null) return null;
+        return dao.findById(id);
+    }
+
+    public List<Unidad> listar() {
+        return dao.findAll();
+    }
+
     private void validarNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty())
             throw new IllegalArgumentException("El nombre es obligatorio.");
-        String n = nombre.trim();
-        if (n.length() > 50)
+        if (nombre.trim().length() > 50)
             throw new IllegalArgumentException("El nombre no debe exceder 50 caracteres.");
     }
 

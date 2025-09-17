@@ -116,6 +116,27 @@
         .item.has-sub.hover .submenu{display:none}
         .item.has-sub.hover:hover .submenu{display:grid}
         .no-click{pointer-events:none}
+        #sec-u-mod{--bg:#15181c;--card:#2a2e35;--text:#eef0f3;--muted:#7d8793;--input:#3a3f47;--btn:#d18a5b;--btn2:#b77447;--shadow:0 12px 30px rgba(0,0,0,.45);font-family:Poppins,Arial,Helvetica,sans-serif}
+        #sec-u-mod .stage{min-height:calc(100vh - 90px);display:grid;place-items:center;padding:40px 16px}
+        #sec-u-mod .card{width:560px;max-width:94vw;background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:28px 28px 24px;color:var(--text)}
+        #sec-u-mod h2{margin:0 0 18px 0;font-size:22px}
+        #sec-u-mod .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+        #sec-u-mod .full{grid-column:1/-1}
+        #sec-u-mod label{display:block;margin-bottom:6px;font-size:13px;color:#c1c7d0}
+        #sec-u-mod .input{width:100%;height:44px;border:none;border-radius:10px;background:var(--input);color:var(--text);padding:0 44px 0 16px;font-size:14px;outline:none}
+        #sec-u-mod .fake-caret{position:relative}
+        #sec-u-mod .fake-caret::after{content:"";position:absolute;right:14px;top:50%;transform:translateY(-60%);color:#6d7682;font-weight:700}
+        #sec-u-mod ::placeholder{color:#6d7682}
+        #sec-u-mod .btn{display:inline-block;border:none;border-radius:12px;height:42px;padding:0 22px;background:var(--btn);color:#fff;font-weight:600;cursor:pointer}
+        #sec-u-mod .btn:active{transform:translateY(1px);background:var(--btn2)}
+        #sec-u-mod .actions{display:flex;justify-content:center;margin-top:16px}
+        #sec-u-mod .messages{margin-top:12px;color:#ffbfbf}
+        @media (max-width:640px){#sec-u-mod .grid{grid-template-columns:1fr}}
+        #mUnidadOk{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999}
+        #mUnidadOk.show{display:flex}
+        #mUnidadOk .dialog{width:360px;max-width:92vw;background:#22262c;color:#eef0f3;border-radius:12px;box-shadow:var(--shadow);padding:20px}
+        #mUnidadOk .actions{display:flex;justify-content:center;margin-top:14px}
+        #mUnidadOk .btn.gray{background:#3a3f47}
     </style>
 </h:head>
 <h:body>
@@ -207,7 +228,7 @@
                     </div>
                 </div>
 
-                <section id="sec-unidades" class="">
+                <section id="sec-unidades" class="hidden">
                     <div class="form-wrapper">
                         <div class="form-card">
                             <h2>Registrar unidad</h2>
@@ -256,8 +277,79 @@
                 </section>
 
                 <section id="sec-u-mod" class="hidden">
-                    <div class="card"><h3 class="title">Modificar Unidad</h3><p style="color:#cfd4dc">Plantilla (pendiente de funcionalidad).</p></div>
+
+                    <div class="stage">
+                        <div class="card">
+                            <h2>Modificar unidad</h2>
+                            <h:form id="fEditUnidad">
+                                <div class="grid">
+                                    <div class="full">
+                                        <label for="uSel">Unidad</label>
+                                        <div class="fake-caret">
+                                            <h:selectOneMenu id="uSel" value="#{unidadUI.idSeleccionado}" styleClass="input">
+                                                <f:selectItem itemLabel="Selecciona..." itemValue="#{null}"/>
+                                                <f:selectItems value="#{unidadUI.unidades}" var="u"
+                                                               itemValue="#{u.id}"
+                                                               itemLabel="#{u.id} - #{u.nombre}"/>
+                                                <f:ajax listener="#{unidadUI.onPickUnidad}" render="@form"/>
+                                            </h:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div class="full">
+                                        <label for="eNombre">Nombre de la unidad</label>
+                                        <div class="fake-caret">
+                                            <h:inputText id="eNombre" value="#{unidadUI.nombre}" styleClass="input"
+                                                         maxlength="50" required="true" placeholder="Nombre de la unidad"/>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="eTipo">Tipo</label>
+                                        <div class="fake-caret">
+                                            <h:selectOneMenu id="eTipo" value="#{unidadUI.tipo}" styleClass="input" required="true">
+                                                <f:selectItem itemLabel="Selecciona..." itemValue=""/>
+                                                <f:selectItems value="#{unidadUI.tipos}"/>
+                                            </h:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="eHoras">Horas</label>
+                                        <div class="fake-caret">
+                                            <h:inputText id="eHoras" value="#{unidadUI.horas}" styleClass="input"
+                                                         required="true" placeholder="0-4"
+                                                         oninput="this.value=this.value.replace(/[^0-4]/g,'')"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="actions">
+                                    <h:commandButton value="Guardar Cambios" action="#{unidadUI.guardarEdicion}" styleClass="btn">
+                                        <f:ajax execute="@form" render="@form"/>
+                                    </h:commandButton>
+                                </div>
+
+                                <h:messages id="msgs" globalOnly="true" styleClass="messages"/>
+
+                                <h:panelGroup rendered="#{!facesContext.validationFailed and unidadUI.mostrarOk}">
+                                    <script>(function(){openUnidadOk("#{unidadUI.okMsg}");})();</script>
+                                </h:panelGroup>
+                            </h:form>
+                        </div>
+                    </div>
+
+                    <div id="mUnidadOk" role="dialog" aria-modal="true" aria-labelledby="unOkTtl" aria-describedby="unOkTxt">
+                        <div class="dialog">
+                            <h3 id="unOkTtl" style="margin:0 0 8px 0">Unidad</h3>
+                            <p id="unOkTxt" style="margin:0 0 14px 0;color:#cfd4dc">Operación realizada correctamente.</p>
+                            <div class="actions">
+                                <button type="button" class="btn gray" onclick="closeUnidadOk();if(window.showSecById){showSecById('sec-u-cons');}">Buscar</button>
+                            </div>
+                        </div>
+                    </div>
                 </section>
+
                 <section id="sec-u-eli" class="hidden">
                     <div class="card"><h3 class="title">Eliminar Unidad</h3><p style="color:#cfd4dc">Plantilla (pendiente de funcionalidad).</p></div>
                 </section>
@@ -413,6 +505,17 @@
             </div>
         </div>
     </div>
+    <div id="mUnidadOk" class="modal" role="dialog" aria-modal="true"
+         aria-labelledby="unOkTtl" aria-describedby="unOkTxt">
+        <div class="dialog small">
+            <h3 id="unOkTtl" style="margin:0 0 10px 0">Unidad</h3>
+            <p id="unOkTxt" style="margin:0 0 16px 0; color:#cfd4dc">Operación realizada correctamente.</p>
+            <div class="actions center">
+                <button type="button" class="btn gray" onclick="closeUnidadOk();showSecById('sec-u-cons')">Buscar</button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         function toggleDrawer(){
