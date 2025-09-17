@@ -15,6 +15,7 @@ public class UnidadService {
         validarNombre(nombre);
         validarTipo(tipo);
         validarHoras(horas);
+
         Unidad u = new Unidad();
         u.setNombre(nombre.trim());
         u.setTipo(tipo.trim().toUpperCase());
@@ -24,12 +25,13 @@ public class UnidadService {
     }
 
     public Unidad actualizar(Integer id, String nombre, String tipo, Integer horas) {
-        if (id == null) throw new IllegalArgumentException("Selecciona una unidad.");
+        if (id == null) throw new IllegalArgumentException("ID obligatorio.");
         validarNombre(nombre);
         validarTipo(tipo);
         validarHoras(horas);
+
         Unidad u = dao.findById(id);
-        if (u == null) throw new IllegalArgumentException("La unidad no existe.");
+        if (u == null) throw new IllegalArgumentException("Unidad no encontrada.");
         u.setNombre(nombre.trim());
         u.setTipo(tipo.trim().toUpperCase());
         u.setHoras(horas);
@@ -37,13 +39,26 @@ public class UnidadService {
         return u;
     }
 
-    public Unidad obtener(Integer id) {
+    public void eliminar(Integer id) {
+        if (id == null) throw new IllegalArgumentException("ID obligatorio.");
+        dao.delete(id);
+    }
+
+    public Unidad buscarPorId(Integer id) {
         if (id == null) return null;
         return dao.findById(id);
     }
 
+    // ==== Consultas para la pantalla "Consultar unidad" ====
     public List<Unidad> listar() {
         return dao.findAll();
+    }
+
+    public List<Unidad> buscarPorNombre(String filtro) {
+        if (filtro == null || filtro.trim().isEmpty()) {
+            return listar();
+        }
+        return dao.searchByNombre(filtro.trim());
     }
 
     private void validarNombre(String nombre) {

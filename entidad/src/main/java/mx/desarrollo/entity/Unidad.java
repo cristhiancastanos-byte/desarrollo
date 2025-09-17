@@ -14,11 +14,11 @@ public class Unidad {
     @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
 
-    // CLASE | TALLER | LABORATORIO (guardado en mayúsculas)
+    // CLASE | TALLER | LABORATORIO (texto en BD)
     @Column(name = "tipo", nullable = false, length = 15)
     private String tipo;
 
-    // 0..4
+    // 0 a 4 horas
     @Column(name = "horas", nullable = false)
     private Integer horas;
 
