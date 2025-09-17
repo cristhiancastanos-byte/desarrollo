@@ -8,11 +8,10 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <class>mx.desarrollo.entity.Usuario</class>
+        <class>mx.desarrollo.entity.Unidad</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="hibernate.jdbc.time_zone" value="UTC"/>
-
             <property name="jakarta.persistence.jdbc.url"
                       value="jdbc:mysql://localhost:3306/desarrollo?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC"/>
             <property name="jakarta.persistence.jdbc.user" value="sauap"/>

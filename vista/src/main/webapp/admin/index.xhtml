@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
     <title>Administrador dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -10,6 +12,7 @@
         .wrap{padding:14px}
         .shell{background:#101215;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;min-height:70vh}
 
+        /* Header */
         .header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(90deg,var(--accent1),var(--accent2));}
         .leftTitle{display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer}
         .pfp{width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:20px}
@@ -17,30 +20,82 @@
         .logout{display:flex;align-items:center;gap:8px;cursor:pointer;color:#fff;text-decoration:none}
         .logout svg{width:26px;height:26px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.3))}
 
+        /* Drawer */
         .drawer{position:fixed;top:0;left:0;height:100vh;width:280px;background:var(--sidebar);transform:translateX(-105%);transition:transform .22s ease;box-shadow:0 0 0 rgba(0,0,0,0);padding:16px;z-index:9998}
         .drawer.open{transform:translateX(0);box-shadow:12px 0 40px rgba(0,0,0,.35)}
         .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:9997}
         .overlay.show{display:block}
-
         .search{width:100%;border:none;border-radius:12px;background:#3a404a;color:#e8eaed;padding:12px 14px;outline:none;margin-bottom:12px}
         .menu{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
         .item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;color:#eaecef;cursor:pointer}
         .item:hover,.item.active{background:#343b46}
         .item svg{width:24px;height:24px}
 
-        .content{padding:18px;background:#0f1318;min-height:55vh}
+        /* Contenido (BLANCO) */
+        .content{padding:28px;background:#ffffff;min-height:55vh}
         .hidden{display:none}
+
+        /* Tarjetas genéricas */
         .card{background:#151a21;border:1px solid #2a3039;border-radius:12px;padding:14px;margin-bottom:14px}
         .title{font-weight:700;margin:0 0 8px 0}
         .input{width:100%;background:#1e2430;border:1px solid #2c3440;border-radius:10px;color:#e8eaed;padding:10px 12px;outline:none}
 
-        .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);z-index:9999}
-        .modal.show{display:flex}
-        .dialog{width:520px;max-width:94vw;background:#232832;border-radius:10px;box-shadow:0 16px 40px rgba(0,0,0,.45);padding:18px;border:1px solid #3a3f48}
-        .actions{display:flex;justify-content:flex-end;gap:10px}
+        /* === FORMULARIOS estilo dark sobre fondo blanco === */
+        .form-wrapper{display:flex;justify-content:center}
+        .form-card{
+            width:860px;max-width:94vw;margin:14px auto 0 auto;
+            background:#232832;border:1px solid #3a3f48;border-radius:12px;
+            padding:24px 26px;box-shadow:0 16px 40px rgba(0,0,0,.25)
+        }
+        .form-card h2{margin:0 0 14px 0;font-weight:700}
+        .grid-u{display:grid;grid-template-columns:repeat(3,minmax(200px,1fr));gap:14px}
+        .grid-u > .span-3{grid-column:1/-1}
+        .lbl{display:block;font-size:13px;color:#c9ced8;margin-bottom:6px}
+        .form-card .input{
+            width:100%;background:#3a404a;border:1px solid #4a515c;color:#e8eaed;
+            border-radius:12px;padding:12px 14px;outline:none
+        }
+        .hint{font-size:12px;color:#9aa3af;margin-top:6px}
+        .hint.warn{color:#e07a7a}
+
+        .btn-prim{
+            padding:12px 16px;border-radius:12px;border:none;background:#d0925b;
+            color:#fff;cursor:pointer;font-weight:600;width:280px;max-width:60vw
+        }
+        .btn-prim:hover{filter:brightness(1.05)}
+        .center-actions{display:flex;justify-content:center;margin-top:16px}
+
+        /* Modales */
+        .modal{
+            position:fixed; inset:0; display:none;
+            align-items:center; justify-content:center;
+            background:rgba(0,0,0,.45); z-index:9999;
+        }
+        .modal.show{ display:flex; }
+        .dialog{
+            width:520px; max-width:94vw; background:#232832;
+            border-radius:10px; box-shadow:0 16px 40px rgba(0,0,0,.45);
+            padding:18px; border:1px solid #3a3f48;
+        }
+        .dialog.small{ width:360px; }
+        .actions{ display:flex; justify-content:flex-end; gap:10px; }
+        .actions.center{ justify-content:center; }
         .btn{border:none;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:600}
         .btn.gray{background:#3b414c;color:#eaeef3}
         .btn.red{background:#e24d4d;color:#fff}
+
+        /* Chips (para multiselección en otras secciones) */
+        .chips table{border-collapse:separate;border-spacing:10px 8px}
+        .chips input[type="checkbox"]{display:none}
+        .chips label{
+            display:inline-block;padding:8px 12px;border-radius:999px;
+            background:#3a404a;border:1px solid #4a515c;color:#e8eaed;cursor:pointer;
+            user-select:none;transition:.15s;
+        }
+        .chips input[type="checkbox"]:checked + label{
+            background:#d0925b;border-color:#d0925b;color:#fff;
+            box-shadow:0 0 0 2px rgba(208,146,91,.25);
+        }
     </style>
 </h:head>
 <h:body>
@@ -53,16 +108,19 @@
                     <span>Administrador</span>
                 </div>
                 <a class="logout" href="#" onclick="openLogout();return false;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><path d="M10 6H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"/><path d="M15 16l4-4-4-4"/><path d="M19 12H9"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7">
+                        <path d="M10 6H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"/><path d="M15 16l4-4-4-4"/><path d="M19 12H9"/>
+                    </svg>
                     <span>Cerrar sesión</span>
                 </a>
             </div>
 
             <main id="content" class="content">
+                <!-- ============= PROFESORES (placeholder) ============= -->
                 <section id="sec-prof" class="hidden">
                     <div class="card">
                         <h3 class="title">Profesores</h3>
-                        <p>Listado / alta rápida (plantilla lista para conectar a tu capa de negocio).</p>
+                        <p>Plantilla para conectar a tu capa de negocio.</p>
                         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0">
                             <input class="input" placeholder="Nombre completo"/>
                             <input class="input" placeholder="Correo institucional"/>
@@ -70,69 +128,75 @@
                         </div>
                         <button class="btn gray">Guardar</button>
                     </div>
-                    <div class="card">
-                        <h3 class="title">Listado</h3>
-                        <div style="overflow:auto">
-                            <table style="width:100%;border-collapse:collapse">
-                                <thead>
-                                <tr style="text-align:left;color:#cfd6e2">
-                                    <th style="padding:8px 6px;border-bottom:1px solid #2a3039">Nombre</th>
-                                    <th style="padding:8px 6px;border-bottom:1px solid #2a3039">Correo</th>
-                                    <th style="padding:8px 6px;border-bottom:1px solid #2a3039">Rol</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr><td style="padding:8px 6px">—</td><td style="padding:8px 6px">—</td><td style="padding:8px 6px">—</td></tr>
-                                </tbody>
-                            </table>
+                </section>
+
+                <!-- ===================== UNIDADES ===================== -->
+                <section id="sec-unidades" class="">
+                    <div class="form-wrapper">
+                        <div class="form-card">
+                            <h2>Registrar unidad</h2>
+                            <h:form id="fUnidad">
+                                <div class="grid-u">
+                                    <!-- Nombre -->
+                                    <div class="span-3">
+                                        <label class="lbl" for="uNombre">Nombre</label>
+                                        <h:inputText id="uNombre" value="#{unidadUI.nombre}" maxlength="50" required="true"
+                                                     styleClass="input" placeholder="Max: 50 caracteres"/>
+                                        <div class="hint warn">Este campo es obligatorio</div>
+                                    </div>
+
+                                    <!-- Tipo -->
+                                    <div>
+                                        <label class="lbl" for="uTipo">Tipo</label>
+                                        <h:selectOneMenu id="uTipo" value="#{unidadUI.tipo}" styleClass="input" required="true">
+                                            <f:selectItem itemLabel="Selecciona..." itemValue=""/>
+                                            <f:selectItems value="#{unidadUI.tipos}" />
+                                        </h:selectOneMenu>
+                                    </div>
+
+                                    <!-- Horas -->
+                                    <div>
+                                        <label class="lbl" for="uHoras">Horas (0–4)</label>
+                                        <h:inputText id="uHoras" value="#{unidadUI.horas}" required="true"
+                                                     styleClass="input" placeholder="(0–4)"
+                                                     oninput="this.value=this.value.replace(/[^0-4]/g,'')" />
+                                    </div>
+                                </div>
+
+                                <div class="center-actions">
+                                    <h:commandButton value="Guardar"
+                                                     action="#{unidadUI.guardar}"
+                                                     styleClass="btn-prim">
+                                        <!-- procesa todo el form y lo re-renderiza -->
+                                        <f:ajax execute="@form" render="@form" />
+                                    </h:commandButton>
+                                </div>
+
+                                <!-- Mensajes de validación/errores -->
+                                <h:messages globalOnly="true" layout="table" style="color:#ffb3b3;margin-top:14px"/>
+
+                                <!-- Solo muestra el script cuando NO hay validación fallida y hubo éxito -->
+                                <h:panelGroup rendered="#{!facesContext.validationFailed and unidadUI.mostrarOk}">
+                                    <script>(function(){ openUnidadOk("#{unidadUI.okMsg}"); })();</script>
+                                </h:panelGroup>
+
+                            </h:form>
                         </div>
                     </div>
                 </section>
 
-                <section id="sec-unidades" class="hidden">
-                    <div class="card">
-                        <h3 class="title">Unidades</h3>
-                        <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;margin:10px 0">
-                            <input class="input" placeholder="Nombre de la unidad"/>
-                            <input class="input" placeholder="Clave"/>
-                        </div>
-                        <button class="btn gray">Guardar</button>
-                    </div>
-                    <div class="card">
-                        <h3 class="title">Listado</h3>
-                        <p>—</p>
-                    </div>
-                </section>
-
+                <!-- ============= ASIGNACIONES / CONSULTAS (placeholders) ============= -->
                 <section id="sec-asig" class="hidden">
-                    <div class="card">
-                        <h3 class="title">Asignaciones</h3>
-                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0">
-                            <input class="input" placeholder="Profesor"/>
-                            <input class="input" placeholder="Unidad"/>
-                            <input class="input" placeholder="Periodo"/>
-                        </div>
-                        <button class="btn gray">Asignar</button>
-                    </div>
-                    <div class="card">
-                        <h3 class="title">Listado</h3>
-                        <p>—</p>
-                    </div>
+                    <div class="card"><h3 class="title">Asignaciones</h3><p>—</p></div>
                 </section>
-
                 <section id="sec-cons" class="hidden">
-                    <div class="card">
-                        <h3 class="title">Consultas</h3>
-                        <input class="input" placeholder="Buscar por nombre/correo/unidad"/>
-                        <div style="height:12px"></div>
-                        <button class="btn gray">Buscar</button>
-                    </div>
-                    <div class="card"><h3 class="title">Resultados</h3><p>—</p></div>
+                    <div class="card"><h3 class="title">Consultas</h3><p>—</p></div>
                 </section>
             </main>
         </div>
     </div>
 
+    <!-- Drawer -->
     <aside id="drawer" class="drawer" aria-hidden="true">
         <input class="search" placeholder="Buscar"/>
         <ul class="menu">
@@ -144,6 +208,7 @@
     </aside>
     <div id="overlay" class="overlay" onclick="toggleDrawer()"></div>
 
+    <!-- Logout modal -->
     <div id="mLogout" class="modal" role="dialog" aria-modal="true" aria-labelledby="ttl">
         <div class="dialog">
             <h3 id="ttl">Cerrar sesión</h3>
@@ -153,6 +218,18 @@
                 <h:form style="display:inline">
                     <h:commandButton value="Cerrar sesión" actionListener="#{loginUI.logout}" styleClass="btn red"/>
                 </h:form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal éxito: Unidad -->
+    <div id="mUnidadOk" class="modal" role="dialog" aria-modal="true"
+         aria-labelledby="unOkTtl" aria-describedby="unOkTxt">
+        <div class="dialog small">
+            <h3 id="unOkTtl" style="margin:0 0 10px 0">Unidad registrada</h3>
+            <p id="unOkTxt" style="margin:0 0 16px 0; color:#cfd4dc">Se guardó correctamente.</p>
+            <div class="actions center">
+                <button type="button" class="btn gray" id="mOk" onclick="closeUnidadOk()">Aceptar</button>
             </div>
         </div>
     </div>
@@ -174,9 +251,22 @@
             document.getElementById(id).classList.remove('hidden');
             toggleDrawer();
         }
-
         function openLogout(){ document.getElementById('mLogout').classList.add('show'); }
         function closeLogout(){ document.getElementById('mLogout').classList.remove('show'); }
+
+        // Modal éxito Unidades
+        function openUnidadOk(texto){
+            const m = document.getElementById('mUnidadOk');
+            const t = document.getElementById('unOkTxt');
+            if (t) t.textContent = texto || 'Unidad registrada correctamente.';
+            if (m) m.classList.add('show');
+        }
+        function closeUnidadOk(){
+            const m = document.getElementById('mUnidadOk');
+            if (m) m.classList.remove('show');
+        }
+
+        // Anti-volver cacheado
         window.addEventListener('pageshow', function (e) {
             if (e.persisted || (performance.getEntriesByType('navigation')[0]?.type === 'back_forward')) {
                 window.location.reload();
