@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
     <title>Administrador dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -50,6 +51,11 @@
         .form-card h2{margin:0 0 14px 0;font-weight:700}
         .grid-u{display:grid;grid-template-columns:repeat(3,minmax(200px,1fr));gap:14px}
         .grid-u > .span-3{grid-column:1/-1}
+
+        /* === NUEVO: grid de Profesor (2 columnas) === */
+        .grid-p{display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:14px}
+        .grid-p > .span-2{grid-column:1/-1}
+
         .lbl{display:block;font-size:13px;color:#c9ced8;margin-bottom:6px}
         .form-card .input{
             width:100%;background:#3a404a;border:1px solid #4a515c;color:#e8eaed;
@@ -96,6 +102,11 @@
             background:#d0925b;border-color:#d0925b;color:#fff;
             box-shadow:0 0 0 2px rgba(208,146,91,.25);
         }
+
+        /* Tabla simple */
+        table{width:100%;border-collapse:collapse;margin-top:18px}
+        th,td{padding:10px 12px;border-bottom:1px solid #40454f}
+        th{text-align:left;color:#cfd4dc}
     </style>
 </h:head>
 <h:body>
@@ -116,19 +127,94 @@
             </div>
 
             <main id="content" class="content">
-                <!-- ============= PROFESORES (placeholder) ============= -->
+                <!-- ===================== REGISTRAR PROFESOR ===================== -->
+                <!-- ===================== REGISTRAR PROFESOR ===================== -->
                 <section id="sec-prof" class="hidden">
-                    <div class="card">
-                        <h3 class="title">Profesores</h3>
-                        <p>Plantilla para conectar a tu capa de negocio.</p>
-                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0">
-                            <input class="input" placeholder="Nombre completo"/>
-                            <input class="input" placeholder="Correo institucional"/>
-                            <input class="input" placeholder="Contraseña temporal"/>
+                    <div class="form-wrapper">
+                        <div class="form-card">
+                            <h2>Registrar profesor</h2>
+                            <h:form id="profForm">
+                                <div class="grid-p">
+                                    <div>
+                                        <label class="lbl" for="profNombre">Nombre(s)</label>
+                                        <h:inputText id="profNombre" value="#{profesorUI.nombre}" maxlength="50" required="true"
+                                                     styleClass="input" placeholder="Max: 50 caracteres"/>
+                                        <div class="hint warn">Este campo es obligatorio</div>
+                                    </div>
+
+                                    <div>
+                                        <label class="lbl" for="profApP">Apellido paterno</label>
+                                        <h:inputText id="profApP" value="#{profesorUI.apellidoPaterno}" maxlength="50" required="true"
+                                                     styleClass="input" placeholder="Max: 50 caracteres"/>
+                                        <div class="hint warn">Este campo es obligatorio</div>
+                                    </div>
+
+                                    <div>
+                                        <label class="lbl" for="profApM">Apellido materno</label>
+                                        <h:inputText id="profApM" value="#{profesorUI.apellidoMaterno}" maxlength="50" required="true"
+                                                     styleClass="input" placeholder="Max: 50 caracteres"/>
+                                        <div class="hint warn">Este campo es obligatorio</div>
+                                    </div>
+
+                                    <div>
+                                        <label class="lbl" for="profRFC">RFC</label>
+                                        <h:inputText id="profRFC" value="#{profesorUI.rfc}" maxlength="13" required="true"
+                                                     styleClass="input" placeholder="13 caracteres (persona física)"
+                                                     oninput="this.value=this.value.toUpperCase()"/>
+                                        <div class="hint">Ejemplo: ABCD001231XYZ</div>
+                                    </div>
+
+                                    <div class="span-2">
+                                        <label class="lbl" for="profCorreo">Correo institucional</label>
+                                        <h:inputText id="profCorreo" value="#{profesorUI.correo}" maxlength="100" required="true"
+                                                     styleClass="input" placeholder="ejemplo@uabc.edu.mx"/>
+                                        <div class="hint warn">Usa el correo con el que iniciará sesión</div>
+                                    </div>
+                                </div>
+
+                                <div class="center-actions">
+                                    <h:commandButton value="Guardar"
+                                                     action="#{profesorUI.guardar}"
+                                                     styleClass="btn-prim">
+                                        <f:ajax execute="@form" render="@form"/>
+                                    </h:commandButton>
+                                </div>
+
+                                <h:messages globalOnly="true" layout="table" style="color:#ffb3b3;margin-top:14px"/>
+
+                                <!-- Disparo modal éxito con la contraseña en okMsg -->
+                                <h:panelGroup rendered="#{!facesContext.validationFailed and profesorUI.mostrarOk}">
+                                    <script>(function(){ openProfOk("#{profesorUI.okMsg}"); })();</script>
+                                </h:panelGroup>
+                            </h:form>
                         </div>
-                        <button class="btn gray">Guardar</button>
                     </div>
                 </section>
+
+                <!-- Modal éxito: Profesor (colócalo abajo donde tienes los demás modales) -->
+                <div id="mProfOk" class="modal" role="dialog" aria-modal="true"
+                     aria-labelledby="profOkTtl" aria-describedby="profOkTxt">
+                    <div class="dialog small">
+                        <h3 id="profOkTtl" style="margin:0 0 10px 0">Profesor registrado</h3>
+                        <p id="profOkTxt" style="margin:0 0 16px 0; color:#cfd4dc">Se guardó correctamente.</p>
+                        <div class="actions center">
+                            <button type="button" class="btn gray" onclick="closeProfOk()">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    function openProfOk(texto){
+                        const m = document.getElementById('mProfOk');
+                        const t = document.getElementById('profOkTxt');
+                        if (t) t.textContent = texto || 'Profesor registrado correctamente.';
+                        if (m) m.classList.add('show');
+                    }
+                    function closeProfOk(){
+                        const m = document.getElementById('mProfOk');
+                        if (m) m.classList.remove('show');
+                    }
+                </script>
+
 
                 <!-- ===================== UNIDADES ===================== -->
                 <section id="sec-unidades" class="">
@@ -167,7 +253,6 @@
                                     <h:commandButton value="Guardar"
                                                      action="#{unidadUI.guardar}"
                                                      styleClass="btn-prim">
-                                        <!-- procesa todo el form y lo re-renderiza -->
                                         <f:ajax execute="@form" render="@form" />
                                     </h:commandButton>
                                 </div>
@@ -175,7 +260,7 @@
                                 <!-- Mensajes de validación/errores -->
                                 <h:messages globalOnly="true" layout="table" style="color:#ffb3b3;margin-top:14px"/>
 
-                                <!-- Solo muestra el script cuando NO hay validación fallida y hubo éxito -->
+                                <!-- Script modal éxito (solo si hubo éxito) -->
                                 <h:panelGroup rendered="#{!facesContext.validationFailed and unidadUI.mostrarOk}">
                                     <script>(function(){ openUnidadOk("#{unidadUI.okMsg}"); })();</script>
                                 </h:panelGroup>
@@ -234,6 +319,18 @@
         </div>
     </div>
 
+    <!-- Modal éxito: Profesor -->
+    <div id="mProfOk" class="modal" role="dialog" aria-modal="true"
+         aria-labelledby="profOkTtl" aria-describedby="profOkTxt">
+        <div class="dialog small">
+            <h3 id="profOkTtl" style="margin:0 0 10px 0">Profesor registrado</h3>
+            <p id="profOkTxt" style="margin:0 0 16px 0; color:#cfd4dc">Se guardó correctamente.</p>
+            <div class="actions center">
+                <button type="button" class="btn gray" onclick="closeProfOk()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleDrawer(){
             const d = document.getElementById('drawer');
@@ -263,6 +360,18 @@
         }
         function closeUnidadOk(){
             const m = document.getElementById('mUnidadOk');
+            if (m) m.classList.remove('show');
+        }
+
+        // Modal éxito Profesor
+        function openProfOk(texto){
+            const m = document.getElementById('mProfOk');
+            const t = document.getElementById('profOkTxt');
+            if (t) t.textContent = texto || 'Profesor registrado correctamente.';
+            if (m) m.classList.add('show');
+        }
+        function closeProfOk(){
+            const m = document.getElementById('mProfOk');
             if (m) m.classList.remove('show');
         }
 

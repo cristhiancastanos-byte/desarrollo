@@ -8,6 +8,19 @@ import java.time.LocalDateTime;
 
 public class UsuarioDAO {
 
+    // === NUEVO: verifica si ya existe un usuario con ese correo ===
+    public boolean existsByCorreo(String correo) {
+        if (correo == null) return false;
+        EntityManager em = JpaUtil.em();
+        try {
+            Long c = em.createQuery(
+                            "SELECT COUNT(u) FROM Usuario u WHERE u.correo = :c", Long.class)
+                    .setParameter("c", correo)
+                    .getSingleResult();
+            return c != null && c > 0;
+        } finally { em.close(); }
+    }
+
     public Usuario findByCorreoAndPass(String correo, String pass) {
         EntityManager em = JpaUtil.em();
         try {

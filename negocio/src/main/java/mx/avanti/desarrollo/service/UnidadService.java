@@ -17,7 +17,7 @@ public class UnidadService {
 
         Unidad u = new Unidad();
         u.setNombre(nombre.trim());
-        u.setTipo(tipo.trim().toUpperCase()); // guardamos en mayúsculas para consistencia
+        u.setTipo(tipo.trim().toUpperCase());
         u.setHoras(horas);
 
         dao.save(u);
