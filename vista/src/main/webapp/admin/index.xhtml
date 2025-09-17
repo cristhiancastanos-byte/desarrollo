@@ -510,8 +510,38 @@
                     </div>
                 </section>
                 <section id="sec-asig-prof" class="hidden">
-                    <div class="card"><h3 class="title">Consultar por Profesor</h3><p style="color:#cfd4dc">Plantilla (pendiente de funcionalidad).</p></div>
+                    <div class="form-wrapper">
+                        <div class="form-card" style="width:960px;max-width:100%">
+                            <h2 style="margin:0 0 14px 0;font-weight:700">Consulta general por profesor</h2>
+
+                            <h:form id="frmConsProf">
+
+
+                                <h:panelGroup id="tblConsProf" layout="block">
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Profesor</th>
+                                            <th>Unidades asignadas</th>
+                                            <th>Horarios</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <ui:repeat value="#{consultaUI.rows}" var="r">
+                                            <tr>
+                                                <td>#{r.profesor}</td>
+                                                <td>#{r.unidadesTexto}</td>
+                                                <td>#{r.horariosTexto}</td>
+                                            </tr>
+                                        </ui:repeat>
+                                        </tbody>
+                                    </table>
+                                </h:panelGroup>
+                            </h:form>
+                        </div>
+                    </div>
                 </section>
+
 
                 <section id="sec-asig" class="hidden">
                     <div class="card"><h3 class="title">Asignaciones</h3><p>—</p></div>
@@ -558,12 +588,6 @@
                 </ul>
             </li>
 
-            <li class="item">
-                <a href="#!" onclick="showSecById('sec-cons');return false;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#eaeef3" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-                    <span>Consultas</span>
-                </a>
-            </li>
         </ul>
     </aside>
     <div id="overlay" class="overlay" onclick="toggleDrawer()"></div>

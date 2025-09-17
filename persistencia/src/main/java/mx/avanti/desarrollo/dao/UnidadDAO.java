@@ -38,15 +38,9 @@ public class UnidadDAO {
         EntityManager em = JpaUtil.em();
         try {
             em.getTransaction().begin();
-            if (u.getId() == null) {
-                em.persist(u);
-            } else {
-                em.merge(u);
-            }
+            if (u.getId() == null) em.persist(u);
+            else em.merge(u);
             em.getTransaction().commit();
-        } catch (RuntimeException ex) {
-            if (em.getTransaction().isActive()) em.getTransaction().rollback();
-            throw ex;
         } finally {
             em.close();
         }
