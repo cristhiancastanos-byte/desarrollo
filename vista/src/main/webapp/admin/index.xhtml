@@ -374,8 +374,37 @@
                 </section>
 
                 <section id="sec-u-eli" class="hidden">
-                    <div class="card"><h3 class="title">Eliminar Unidad</h3><p style="color:#cfd4dc">Plantilla (pendiente de funcionalidad).</p></div>
+                    <div class="form-wrapper">
+                        <div class="form-card" style="width:520px;max-width:92vw;background:#2a2f36;border-radius:12px;padding:24px 26px;box-shadow:0 16px 40px rgba(0,0,0,.25)">
+                            <h2 style="margin:0 0 14px 0;font-weight:700">Eliminar unidad</h2>
+                            <h:form id="frmDelUnidad">
+                                <div style="margin-bottom:16px">
+                                    <h:selectOneMenu id="selUnidad" value="#{unidadUI.idSeleccionado}" styleClass="input">
+                                        <f:selectItem itemLabel="Seleccionar unidad" itemValue="#{null}"/>
+                                        <f:selectItems value="#{unidadUI.unidades}" var="u" itemValue="#{u.id}" itemLabel="#{u.id} - #{u.nombre}"/>
+                                    </h:selectOneMenu>
+                                </div>
+                                <div style="display:flex;justify-content:center;margin-top:12px">
+                                    <h:commandButton value="Eliminar" action="#{unidadUI.eliminar}" styleClass="btn red" onclick="return confirm('¿Seguro que quieres eliminar?')"/>
+                                </div>
+                                <h:messages id="msgsDel" globalOnly="true" styleClass="msgs"/>
+                                <h:panelGroup id="okModal" rendered="#{unidadUI.mostrarOk}">
+                                    <div style="position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999">
+                                        <div style="background:#1f242a;padding:20px 24px;border-radius:12px;min-width:280px;text-align:center">
+                                            <div style="font-weight:700;margin-bottom:8px">#{unidadUI.okMsg}</div>
+                                            <h:commandButton value="Aceptar" action="#{unidadUI.cerrarOk}" styleClass="btn">
+                                                <f:ajax render="okModal" />
+                                            </h:commandButton>
+                                        </div>
+                                    </div>
+                                </h:panelGroup>
+
+                            </h:form>
+                        </div>
+                    </div>
                 </section>
+
+
                 <section id="sec-u-cons" class="hidden">
                     <div class="form-wrapper">
                         <div class="form-card" style="width:520px;max-width:94vw;background:#2a2e35;border:1px solid #3a3f48;border-radius:12px;padding:24px 26px;box-shadow:0 16px 40px rgba(0,0,0,.25)">
@@ -487,9 +516,7 @@
                 <section id="sec-asig" class="hidden">
                     <div class="card"><h3 class="title">Asignaciones</h3><p>—</p></div>
                 </section>
-                <section id="sec-cons" class="hidden">
-                    <div class="card"><h3 class="title">Consultas</h3><p>—</p></div>
-                </section>
+
             </main>
         </div>
     </div>

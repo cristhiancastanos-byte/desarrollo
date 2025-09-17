@@ -15,7 +15,6 @@ public class UnidadService {
         validarNombre(nombre);
         validarTipo(tipo);
         validarHoras(horas);
-
         Unidad u = new Unidad();
         u.setNombre(nombre.trim());
         u.setTipo(tipo.trim().toUpperCase());
@@ -25,13 +24,12 @@ public class UnidadService {
     }
 
     public Unidad actualizar(Integer id, String nombre, String tipo, Integer horas) {
-        if (id == null) throw new IllegalArgumentException("ID obligatorio.");
+        if (id == null) throw new IllegalArgumentException("ID inválido.");
         validarNombre(nombre);
         validarTipo(tipo);
         validarHoras(horas);
-
         Unidad u = dao.findById(id);
-        if (u == null) throw new IllegalArgumentException("Unidad no encontrada.");
+        if (u == null) throw new IllegalArgumentException("La unidad no existe.");
         u.setNombre(nombre.trim());
         u.setTipo(tipo.trim().toUpperCase());
         u.setHoras(horas);
@@ -40,32 +38,27 @@ public class UnidadService {
     }
 
     public void eliminar(Integer id) {
-        if (id == null) throw new IllegalArgumentException("ID obligatorio.");
+        if (id == null) throw new IllegalArgumentException("Debes seleccionar una unidad.");
+        long deps = dao.countAsignaciones(id);
+        if (deps > 0) {
+            throw new IllegalStateException("No se puede eliminar: la unidad tiene asignaciones activas.");
+        }
         dao.delete(id);
     }
 
-    public Unidad buscarPorId(Integer id) {
-        if (id == null) return null;
+    public Unidad obtenerPorId(Integer id) {
         return dao.findById(id);
     }
 
-    // ==== Consultas para la pantalla "Consultar unidad" ====
-    public List<Unidad> listar() {
-        return dao.findAll();
-    }
-
     public List<Unidad> buscarPorNombre(String filtro) {
-        if (filtro == null || filtro.trim().isEmpty()) {
-            return listar();
-        }
-        return dao.searchByNombre(filtro.trim());
+        return dao.findByNombreLike(filtro);
     }
 
     private void validarNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty())
             throw new IllegalArgumentException("El nombre es obligatorio.");
         if (nombre.trim().length() > 50)
-            throw new IllegalArgumentException("El nombre no debe exceder 50 caracteres.");
+            throw new IllegalArgumentException("Máximo 50 caracteres.");
     }
 
     private void validarTipo(String tipo) {

@@ -16,20 +16,19 @@ import java.util.List;
 @Named("unidadUI")
 @ViewScoped
 public class UnidadBeanUI implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    private Integer idEditar;
+    private final UnidadService service = new UnidadService();
+
     private Integer idSeleccionado;
+    private Integer idEditar;
     private String nombre;
     private String tipo;
     private Integer horas;
-
     private String filtro;
     private List<Unidad> unidades = new ArrayList<>();
-
-    private boolean mostrarOk = false;
-    private String okMsg = "Operación exitosa";
-
-    private final UnidadService service = new UnidadService();
+    private boolean mostrarOk;
+    private String okMsg;
 
     @PostConstruct
     public void init() {
@@ -44,15 +43,29 @@ public class UnidadBeanUI implements Serializable {
         try {
             unidades = service.buscarPorNombre(filtro);
             mostrarOk = false;
-            if (unidades == null || unidades.isEmpty()) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO,
-                                "No hay unidades registradas", null));
+        } catch (Exception ex) {
+            addError("Error al consultar: " + ex.getMessage());
+        }
+    }
+
+    public void onPickUnidad() {
+        if (idSeleccionado == null) {
+            idEditar = null;
+            nombre = null;
+            tipo = null;
+            horas = null;
+            return;
+        }
+        try {
+            Unidad u = service.obtenerPorId(idSeleccionado);
+            if (u != null) {
+                idEditar = u.getId();
+                nombre = u.getNombre();
+                tipo = u.getTipo();
+                horas = u.getHoras();
             }
         } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Error al consultar: " + ex.getMessage(), null));
+            addError("No se pudo cargar la unidad seleccionada.");
         }
     }
 
@@ -66,86 +79,68 @@ public class UnidadBeanUI implements Serializable {
                 okMsg = "Unidad actualizada correctamente";
             }
             mostrarOk = true;
-            limpiarCampos();
+            limpiarEdicion();
             buscar();
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, okMsg, null));
-            return null;
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            addError(ex.getMessage());
         } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, ex.getMessage(), null));
-            return null;
+            addError("Error inesperado al guardar.");
         }
+        return null;
     }
 
-    public void onPickUnidad() {
+    public String eliminar() {
         try {
-            if (idSeleccionado == null) return;
-            Unidad u = service.buscarPorId(idSeleccionado);
-            if (u != null) {
-                idEditar = u.getId();
-                nombre = u.getNombre();
-                tipo = u.getTipo();
-                horas = u.getHoras();
+            if (idSeleccionado == null) {
+                addError("Selecciona una unidad.");
+                return null;
             }
-        } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "No se pudo cargar la unidad: " + ex.getMessage(), null));
-        }
-    }
-
-    public String guardarEdicion() {
-        try {
-            Integer id = (idEditar != null) ? idEditar : idSeleccionado;
-            if (id == null) throw new IllegalArgumentException("Selecciona una unidad.");
-            service.actualizar(id, nombre, tipo, horas);
-            okMsg = "Unidad actualizada correctamente";
+            service.eliminar(idSeleccionado);
+            okMsg = "Eliminado correctamente";
             mostrarOk = true;
-            limpiarCampos();
+            idSeleccionado = null;
             buscar();
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, okMsg, null));
-            return null;
+        } catch (IllegalStateException | IllegalArgumentException ex) {
+            addError(ex.getMessage());
         } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, ex.getMessage(), null));
-            return null;
+            addError("Error inesperado al eliminar.");
         }
+        return null;
     }
 
-    private void limpiarCampos() {
+    public void cerrarOk() {
+        mostrarOk = false;
+        okMsg = null;
+    }
+
+    private void limpiarEdicion() {
         idEditar = null;
-        idSeleccionado = null;
         nombre = null;
         tipo = null;
         horas = null;
     }
 
-    public Integer getIdEditar() { return idEditar; }
-    public void setIdEditar(Integer idEditar) { this.idEditar = idEditar; }
+    private void addError(String m) {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, m, null));
+    }
 
     public Integer getIdSeleccionado() { return idSeleccionado; }
     public void setIdSeleccionado(Integer idSeleccionado) { this.idSeleccionado = idSeleccionado; }
-
+    public Integer getIdEditar() { return idEditar; }
+    public void setIdEditar(Integer idEditar) { this.idEditar = idEditar; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
-
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
-
     public Integer getHoras() { return horas; }
     public void setHoras(Integer horas) { this.horas = horas; }
-
     public String getFiltro() { return filtro; }
     public void setFiltro(String filtro) { this.filtro = filtro; }
-
     public List<Unidad> getUnidades() { return unidades; }
     public void setUnidades(List<Unidad> unidades) { this.unidades = unidades; }
-
     public boolean isMostrarOk() { return mostrarOk; }
     public void setMostrarOk(boolean mostrarOk) { this.mostrarOk = mostrarOk; }
-
     public String getOkMsg() { return okMsg; }
     public void setOkMsg(String okMsg) { this.okMsg = okMsg; }
 }
