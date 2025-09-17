@@ -16,7 +16,6 @@ import java.util.List;
 @Named("unidadUI")
 @ViewScoped
 public class UnidadBeanUI implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     private final UnidadService service = new UnidadService();
 
@@ -27,6 +26,7 @@ public class UnidadBeanUI implements Serializable {
     private Integer horas;
     private String filtro;
     private List<Unidad> unidades = new ArrayList<>();
+
     private boolean mostrarOk;
     private String okMsg;
 
@@ -44,7 +44,7 @@ public class UnidadBeanUI implements Serializable {
             unidades = service.buscarPorNombre(filtro);
             mostrarOk = false;
         } catch (Exception ex) {
-            addError("Error al consultar: " + ex.getMessage());
+            addError("No se pudo cargar el listado.");
         }
     }
 
@@ -89,6 +89,24 @@ public class UnidadBeanUI implements Serializable {
         return null;
     }
 
+    // === FUNCION DE MODIFICAR TRAIDA DE LA VERSION ANTERIOR ===
+    public String guardarEdicion() {
+        try {
+            if (idEditar == null) throw new IllegalArgumentException("Selecciona una unidad.");
+            service.actualizar(idEditar, nombre, tipo, horas);
+            okMsg = "Unidad modificada correctamente.";
+            mostrarOk = true;
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, msg != null ? msg : "Error al modificar la unidad.", null)
+            );
+        }
+        return null;
+    }
+    // ==========================================================
+
     public String eliminar() {
         try {
             if (idSeleccionado == null) {
@@ -100,20 +118,23 @@ public class UnidadBeanUI implements Serializable {
             mostrarOk = true;
             idSeleccionado = null;
             buscar();
-        } catch (IllegalStateException | IllegalArgumentException ex) {
-            addError(ex.getMessage());
         } catch (Exception ex) {
-            addError("Error inesperado al eliminar.");
+            addError("No se pudo eliminar.");
         }
         return null;
     }
 
-    public void cerrarOk() {
+    public void limpiar() {
+        idSeleccionado = null;
+        idEditar = null;
+        nombre = null;
+        tipo = null;
+        horas = null;
         mostrarOk = false;
         okMsg = null;
     }
 
-    private void limpiarEdicion() {
+    public void limpiarEdicion() {
         idEditar = null;
         nombre = null;
         tipo = null;
